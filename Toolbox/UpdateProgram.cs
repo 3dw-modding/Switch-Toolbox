@@ -1,19 +1,16 @@
-﻿using System;
-using System.Linq;
+﻿using Octokit;
+using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using Octokit;
-using System.IO;
-using System.Net;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
-using Toolbox.Library;
+using System.Net;
 using System.Reflection;
+using System.Threading.Tasks;
+using Toolbox.Library;
 
-namespace Toolbox
-{
-    public class UpdateProgram
-    {
+namespace Toolbox {
+    public class UpdateProgram {
         static List<Release> Releases = new List<Release>();
         public static bool CanUpdate = false;
         public static bool Downloaded = false;
@@ -70,9 +67,7 @@ namespace Toolbox
 
                 Releases.Clear();
             }
-            catch (Exception ex)
-            {
-            }
+            catch (Exception) { }
         }
 
         static void DownloadRelease()
@@ -114,16 +109,13 @@ namespace Toolbox
             {
                 if (IsValidTime)
                 {
-                    if (CurrentRelease.DateTime < c.Commit.Author.Date.DateTime)
-                        CommitList.Add(c);
-                    else
+                    if (!(CurrentRelease.DateTime < c.Commit.Author.Date.DateTime))
                         break;
-                }
-                else
-                {
-                    //Just add extra commits. This shouldn't happen unless the user actually edits the file
                     CommitList.Add(c);
                 }
+                else
+                    //Just add extra commits. This shouldn't happen unless the user actually edits the file
+                    CommitList.Add(c);
             }
         }
 

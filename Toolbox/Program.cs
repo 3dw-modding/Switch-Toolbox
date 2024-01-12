@@ -1,20 +1,15 @@
-﻿using System;
+﻿using Microsoft.VisualBasic.ApplicationServices;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.IO;
-using System.Globalization;
-using System.Threading;
-using System.Runtime.InteropServices;
+using System.Linq;
 using System.Reflection;
-using Microsoft.VisualBasic.ApplicationServices;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
 using Toolbox.Library;
 
-namespace Toolbox
-{
-    static class Program
-    {
+namespace Toolbox {
+    static class Program {
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -25,7 +20,7 @@ namespace Toolbox
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Toolbox.Library.Runtime.ExecutableDir = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+            Runtime.ExecutableDir = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
 
             string[] args = Environment.GetCommandLineArgs();
 
@@ -50,7 +45,7 @@ namespace Toolbox
             domain.AssemblyResolve += LoadAssembly;
 
             bool LoadedDX = TryLoadDirectXTex();
-            if (!LoadedDX && !Toolbox.Library.Runtime.UseDirectXTexDecoder)
+            if (!(LoadedDX || Runtime.UseDirectXTexDecoder))
             {
                 var result = MessageBox.Show("Direct X Tex Failed to load! Make sure to install Visual C++ and Direct X Tex. Do you want to go to the install sites?", "", MessageBoxButtons.YesNo);
                 if (result == DialogResult.Yes)
@@ -62,7 +57,7 @@ namespace Toolbox
 
             MainForm.LoadConfig();
 
-            if (Toolbox.Library.Runtime.UseSingleInstance)
+            if (Runtime.UseSingleInstance)
             {
                 SingleInstanceController controller = new SingleInstanceController();
                 controller.Run(args);
@@ -77,8 +72,7 @@ namespace Toolbox
 
         [ComVisible(true), ComImport, Guid("000214eb-0000-0000-c000-000000000046"),
         InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-        public interface IExtractIcon
-        {
+        public interface IExtractIcon {
             [PreserveSig]
             uint GetIconLocation(int uFlags, IntPtr szIconFile, int cchMax, IntPtr piIndex, UIntPtr pwFlags);
 
@@ -86,8 +80,7 @@ namespace Toolbox
             uint Extract(string pszFile, uint nIconIndex, ref IntPtr phiconLarge, ref IntPtr phiconSmall, uint nIconSize);
         }
 
-        public class SingleInstanceController : WindowsFormsApplicationBase
-        {
+        public class SingleInstanceController : WindowsFormsApplicationBase {
             public SingleInstanceController()
             {
                 IsSingleInstance = true;
@@ -132,7 +125,7 @@ namespace Toolbox
                     return true;
                 }
             }
-            catch (Exception ex)
+            catch (Exception _)
             {
             }
             return false;
@@ -170,7 +163,7 @@ namespace Toolbox
         {
             Assembly result = null;
             if (args != null && !string.IsNullOrEmpty(args.Name))
-    {
+            {
                 //Get current exe fullpath
                 FileInfo info = new FileInfo(Assembly.GetExecutingAssembly().Location);
 
@@ -222,7 +215,7 @@ namespace Toolbox
             return null;
         }
 
-        private static string GetAssemblyPath(string dir) => Path.Combine(dir,"Lib", ArchitectureMoniker, "DirectXTexNetImpl.dll");
+        private static string GetAssemblyPath(string dir) => Path.Combine(dir, "Lib", ArchitectureMoniker, "DirectXTexNetImpl.dll");
 
         // Note: currently no support for ARM.
         // Don't use %PROCESSOR_ARCHITECTURE% as it calls x64 'AMD64'.

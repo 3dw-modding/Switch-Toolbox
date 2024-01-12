@@ -9,19 +9,15 @@ using System.Security;
 using System.Security.Permissions;
 using System.Diagnostics;
 
-namespace Toolbox.WindowsExplorer
-{
-    static class FileShellExtension
-    {
-        public static void Register(string keyText, string menuText, string regType = "*", string command = "")
-        {
+namespace Toolbox.WindowsExplorer {
+    static class FileShellExtension {
+        public static void Register(string keyText, string menuText, string regType = "*", string command = "") {
             string regPath = string.Format(@"{0}\shell\{1}", regType, keyText);
             string cmdPath = string.Format(@"{0}\shell\{1}\command", regType, keyText);
             string iconPath = string.Format(@"{0}\shell\{1}\command", regType, keyText);
 
             //Key for menu
-            using (RegistryKey key = Registry.ClassesRoot.CreateSubKey(regPath))
-            {
+            using (RegistryKey key = Registry.ClassesRoot.CreateSubKey(regPath)) {
                 key.SetValue(null, menuText);
             }
 
@@ -36,8 +32,7 @@ namespace Toolbox.WindowsExplorer
             }
         }
 
-        public static void Unregister(string fileType, string shellKeyName)
-        {
+        public static void Unregister(string fileType, string shellKeyName) {
             Debug.Assert(!string.IsNullOrEmpty(fileType) &&
                 !string.IsNullOrEmpty(shellKeyName));
 
@@ -56,13 +51,11 @@ namespace Toolbox.WindowsExplorer
         private const string DirectoryMenuName = "Directory\\Background\\Shell";
         private const string FolderMenuName = "Folder\\shell";
 
-        private static string ApplicationExecutable
-        {
+        private static string ApplicationExecutable {
             get { return System.Reflection.Assembly.GetEntryAssembly().Location; }
         }
 
-        public static void LoadMenus()
-        {
+        public static void LoadMenus() {
             //     RemoveRegistry("Compress YAZ0");
             //   RemoveRegistry("Decompress YAZ0");
 
@@ -77,27 +70,23 @@ namespace Toolbox.WindowsExplorer
           //  AddDirectoryRegistry("Decompress YAZ0", "-Yaz0 -d");
         }
 
-        private static void AddFileRegistry(string fileType, string shellKeyName, string menuText, string menuCommand)
-        {
+        private static void AddFileRegistry(string fileType, string shellKeyName, string menuText, string menuCommand) {
             string regPath = string.Format(@"{0}\shell\{1}", fileType, shellKeyName);
 
             // add context menu to the registry
             using (RegistryKey key =
-                   Registry.ClassesRoot.CreateSubKey(regPath))
-            {
+                   Registry.ClassesRoot.CreateSubKey(regPath)) {
                 key.SetValue(null, menuText);
             }
 
             // add command that is invoked to the registry
             using (RegistryKey key = Registry.ClassesRoot.CreateSubKey(
-                string.Format(@"{0}\command", regPath)))
-            {
+                string.Format(@"{0}\command", regPath))) {
                 key.SetValue(null, menuCommand);
             }
         }
 
-        private static void AddDirectoryRegistry(string MenuName, string Arguments)
-        {
+        private static void AddDirectoryRegistry(string MenuName, string Arguments) {
             RegistryKey _key = Registry.ClassesRoot.OpenSubKey(FolderMenuName, true);
             RegistryKey newkey = _key.CreateSubKey(MenuName);
             RegistryKey subNewkey = newkey.CreateSubKey("Command");
@@ -107,8 +96,7 @@ namespace Toolbox.WindowsExplorer
             _key.Close();
         }
 
-        private static void RemoveDirectoryRegistry(string MenuName)
-        {
+        private static void RemoveDirectoryRegistry(string MenuName) {
             RegistryKey _key = Registry.ClassesRoot.OpenSubKey("Directory\\Background\\Shell\\", true);
             _key.DeleteSubKey(MenuName);
             _key.Close();

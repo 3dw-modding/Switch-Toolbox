@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 using Toolbox.Library;
 
-namespace Toolbox
-{
-    public class VersionCheck
-    {
+namespace Toolbox {
+    public class VersionCheck {
         public string ProgramVersion = "";
         public string CompileDate = "";
         public string CommitInfo = "";
